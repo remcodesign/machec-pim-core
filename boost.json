@@ -1,0 +1,32 @@
+{
+    "agents": [
+        "claude_code"
+    ],
+    "cloud": true,
+    "guidelines": true,
+    "mcp": true,
+    "nightwatch": false,
+    "packages": [
+        "livewire/blaze"
+    ],
+    "sail": false,
+    "skills": [
+        "infer-conventions",
+        "deploying-to-cloud",
+        "fortify-development",
+        "laravel-best-practices",
+        "testing-best-practices",
+        "fluxui-development",
+        "livewire-development",
+        "tailwindcss-development",
+        "blaze-optimize",
+        "concepts-db-modules-overview",
+        "livewire-alpine-js-debugging",
+        "old-coder",
+        "old-coder-api",
+        "pest-testing-boundaries",
+        "spatie-data-dto-livewire-boundary",
+        "specs-as-code-architect-friendly",
+        "specs-as-code-architect-friendly-graph"
+    ]
+}
