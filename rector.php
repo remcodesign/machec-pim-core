@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Pest\Rector\Set\PestSetList;
 use Rector\Config\RectorConfig;
 use RectorLaravel\Rector\ClassMethod\AddGenericReturnTypeToRelationsRector;
 
@@ -12,6 +13,9 @@ return RectorConfig::configure()
         __DIR__.'/routes',
         __DIR__.'/tests',
         __DIR__.'/resources/views/livewire',
+    ])
+    ->withSets([
+        PestSetList::CODING_STYLE,
     ])
 
     // 1. Upgrade automatically to the current PHP version (PHP 8.4)
