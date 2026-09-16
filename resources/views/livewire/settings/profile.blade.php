@@ -9,7 +9,6 @@
 
             <div>
                 <flux:input wire:model="email" :label="__('Email')" type="email" required autocomplete="email" />
-
             </div>
 
             <div class="flex items-center gap-4">
@@ -17,6 +16,6 @@
             </div>
         </form>
 
-            <livewire:settings.delete-user-form />
+        <livewire:settings.delete-user-form />
     </x-settings.layout>
 </section>
