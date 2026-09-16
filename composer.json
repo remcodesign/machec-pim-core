@@ -127,7 +127,6 @@
         "format-basic": [
             "@php artisan config:clear --ansi",
             "@pint",
-            "@typescript",
             "@phpstan",
             "@pest"
         ],
@@ -135,7 +134,6 @@
             "@php artisan config:clear --ansi",
             "@pint_w_blade",
             "@rector",
-            "@typescript",
             "@phpstan",
             "@pest"
         ]
