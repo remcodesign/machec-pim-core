@@ -16,9 +16,11 @@
         "laravel/tinker": "^3.0",
         "livewire/blaze": "^1.0",
         "livewire/flux": "^2.13.1",
-        "livewire/livewire": "^4.1"
+        "livewire/livewire": "^4.1",
+        "pgvector/pgvector": "^0.2.2"
     },
     "require-dev": {
+        "driftingly/rector-laravel": "^2.6",
         "fakerphp/faker": "^1.24",
         "larastan/larastan": "^3.9",
         "laravel/boost": "^2.2",
@@ -29,7 +31,8 @@
         "mockery/mockery": "^1.6",
         "nunomaduro/collision": "^8.9.3",
         "pestphp/pest": "^5.1",
-        "pestphp/pest-plugin-laravel": "^5.0"
+        "pestphp/pest-plugin-laravel": "^5.0",
+        "rector/rector": "^2.6"
     },
     "autoload": {
         "psr-4": {
@@ -93,6 +96,48 @@
         ],
         "pre-package-uninstall": [
             "Illuminate\\Foundation\\ComposerScripts::prePackageUninstall"
+        ],
+
+
+
+        "db_refresh": [
+            "@php artisan migrate:fresh --force"
+        ],
+        "db_refresh_seed": [
+            "@php artisan migrate:fresh --seed --force"
+        ],
+        "pint": "vendor/bin/pint",
+        "pint_w_blade": "vendor/bin/pint --blade",
+        "rector": "vendor/bin/rector process",
+        "phpstan": "vendor/bin/phpstan analyse",
+        "stan": "@phpstan",
+        "pest": [
+            "@php artisan config:clear --ansi @no_additional_args",
+            "vendor/bin/pest --compact"
+        ],
+        "coverage": [
+            "@php artisan config:clear --ansi @no_additional_args",
+            "@php -r \"is_dir('public/coverage') && system('rm -rf public/coverage');\"",
+            "XDEBUG_MODE=coverage vendor/bin/pest --compact --parallel --coverage-html public/coverage --coverage-clover clover.xml"
+        ],
+        "typescript": [
+            "@php artisan typescript:transform",
+            "npm run typecheck"
+        ],
+        "format-basic": [
+            "@php artisan config:clear --ansi",
+            "@pint",
+            "@typescript",
+            "@phpstan",
+            "@pest"
+        ],
+        "format": [
+            "@php artisan config:clear --ansi",
+            "@pint_w_blade",
+            "@rector",
+            "@typescript",
+            "@phpstan",
+            "@pest"
         ]
     },
     "extra": {
