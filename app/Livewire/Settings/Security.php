@@ -3,6 +3,7 @@
 namespace App\Livewire\Settings;
 
 use App\Concerns\PasswordValidationRules;
+use App\Models\User;
 use Flux\Flux;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
@@ -42,7 +43,10 @@ class Security extends Component
             throw $e;
         }
 
-        Auth::user()->update([
+        /** @var User $user */
+        $user = Auth::user();
+
+        $user->update([
             'password' => $validated['password'],
         ]);
 

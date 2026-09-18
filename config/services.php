@@ -35,4 +35,14 @@ return [
         ],
     ],
 
+    // Fixed password for the seeded pim_admin demo account (DatabaseSeeder,
+    // D51) — known only to whoever holds this app's real .env, so the same
+    // seeded account can be logged into from ddev or a deployed environment
+    // without a random per-run password. Override per environment for a
+    // stronger deployed secret.
+    // .env variable: ADMIN_PASSWORD can not be empty!
+    'demo' => [
+        'admin_password' => env('ADMIN_PASSWORD'),
+    ],
+
 ];
