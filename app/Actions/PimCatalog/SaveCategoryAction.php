@@ -3,6 +3,7 @@
 namespace App\Actions\PimCatalog;
 
 use App\Concerns\WritesAuditLog;
+use App\Data\Requests\CategoryData;
 use App\Enums\PimRole;
 use App\Models\Category;
 use App\Models\User;
@@ -18,20 +19,19 @@ class SaveCategoryAction
     use WritesAuditLog;
 
     /**
-     * @param  array{slug: string, name: string, parent_id: int|null, filterable_attributes: list<string>}  $data
      * @param  array<string, string>  $attributeRenames  Old key => new key, for lines whose text changed since this category was last saved (never a removed/added line — those are add-on-save/no-op and confirmed-delete respectively).
      */
-    public function handle(Request $request, User $admin, array $data, ?Category $category = null, array $attributeRenames = []): Category
+    public function handle(Request $request, User $admin, CategoryData $data, ?Category $category = null, array $attributeRenames = []): Category
     {
         // Re-checked here, never trusted from hidden UI alone (D97's pattern).
         abort_unless($admin->hasRole(PimRole::PimAdmin->value), 403);
 
         return DB::transaction(function () use ($request, $admin, $data, $category, $attributeRenames): Category {
             if ($category instanceof Category) {
-                $category->update($data);
+                $category->update($data->toArray());
                 $this->recordAuditLog($request, $admin, 'category.updated', $category);
             } else {
-                $category = Category::create($data);
+                $category = Category::create($data->toArray());
                 $this->recordAuditLog($request, $admin, 'category.created', $category);
             }
 

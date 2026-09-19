@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\CatalogCategoriesController;
 use App\Http\Controllers\Api\CatalogProductsController;
+use App\Http\Controllers\Api\StockMovementController;
 use Illuminate\Support\Facades\Route;
 
 /**
@@ -14,4 +15,8 @@ use Illuminate\Support\Facades\Route;
 Route::middleware(['auth:sanctum', 'ability:catalog:read'])->prefix('v1')->group(function (): void {
     Route::get('/products', CatalogProductsController::class);
     Route::get('/categories', CatalogCategoriesController::class);
+});
+
+Route::middleware(['auth:sanctum', 'ability:stock:movements:write'])->prefix('v1')->group(function (): void {
+    Route::post('/stock/movements', StockMovementController::class);
 });

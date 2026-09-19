@@ -46,6 +46,33 @@ test('returns only products modified since the given timestamp, paginated', func
         ->and($skus)->not->toContain('old-sku');
 });
 
+test('rejects invalid product catalog query values', function (): void {
+    Sanctum::actingAs(User::factory()->create(), ['catalog:read']);
+
+    $response = $this->getJson('/api/v1/products?modified_since=not-a-date&price_min=-1');
+
+    $response->assertUnprocessable()
+        ->assertJsonValidationErrors(['modified_since', 'price_min']);
+});
+
+test('rejects an invalid category modified_since value', function (): void {
+    Sanctum::actingAs(User::factory()->create(), ['catalog:read']);
+
+    $response = $this->getJson('/api/v1/categories?modified_since=not-a-date');
+
+    $response->assertUnprocessable()
+        ->assertJsonValidationErrors(['modified_since']);
+});
+
+test('rejects a product price range where the minimum exceeds the maximum', function (): void {
+    Sanctum::actingAs(User::factory()->create(), ['catalog:read']);
+
+    $response = $this->getJson('/api/v1/products?price_min=200&price_max=100');
+
+    $response->assertUnprocessable()
+        ->assertJsonValidationErrors(['price_min', 'price_max']);
+});
+
 test('returns the full paginated collection when modified_since is omitted', function (): void {
     Sanctum::actingAs(User::factory()->create(), ['catalog:read']);
     $category = createCategory();

@@ -4,6 +4,7 @@ namespace App\Livewire\PimCatalog;
 
 use App\Actions\PimCatalog\RemoveCategoryAttributeAction;
 use App\Actions\PimCatalog\SaveCategoryAction;
+use App\Data\Requests\CategoryData;
 use App\Livewire\PimCatalog\Forms\CategoryDetailsForm;
 use App\Models\Category;
 use App\Models\User;
@@ -101,7 +102,7 @@ class CategoryForm extends Component
         $this->category = $action->handle(
             request(),
             $admin,
-            $this->form->toCategoryAttributes(),
+            CategoryData::from($this->form->toCategoryAttributes()),
             $this->category,
             $renames,
         );

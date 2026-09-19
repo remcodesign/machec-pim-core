@@ -34,6 +34,8 @@
                     {{ __('Users') }}
                 </flux:sidebar.item>
 
+                <br />
+
                 <flux:sidebar.item
                     icon="archive-box"
                     :href="route('products.index')"

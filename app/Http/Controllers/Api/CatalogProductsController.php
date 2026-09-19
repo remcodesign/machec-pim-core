@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Actions\PimCatalog\ListProductsAction;
+use App\Data\Requests\CatalogProductsRequestData;
 use App\Data\Responses\ProductListData;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
@@ -16,8 +17,11 @@ use Illuminate\Http\Request;
  */
 class CatalogProductsController extends Controller
 {
-    public function __invoke(Request $request, ListProductsAction $action): JsonResponse
-    {
+    public function __invoke(
+        CatalogProductsRequestData $data,
+        Request $request,
+        ListProductsAction $action,
+    ): JsonResponse {
         $products = $action->handle($request)->through(
             fn ($product) => ProductListData::fromProduct($product),
         );
