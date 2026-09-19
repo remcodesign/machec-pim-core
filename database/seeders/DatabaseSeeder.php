@@ -35,5 +35,7 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make(config('services.demo.admin_password')),
         ]);
         $pimAdmin->assignRole('pim_admin');
+
+        $this->call(CatalogSeeder::class);
     }
 }
