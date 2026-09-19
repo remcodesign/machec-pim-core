@@ -1,0 +1,34 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * Step 3.1's own column list for `pim_categories` didn't include
+     * timestamps, but Step 3.3's `GET /api/v1/categories?modified_since=`
+     * contract needs one to filter against (D40) — added here rather than
+     * back into the original migration, so the schema history stays
+     * truthful about when this was actually needed.
+     */
+    public function up(): void
+    {
+        Schema::table('pim_categories', function (Blueprint $table) {
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::table('pim_categories', function (Blueprint $table) {
+            $table->dropTimestamps();
+        });
+    }
+};

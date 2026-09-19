@@ -9,6 +9,15 @@ use App\Services\CacheGenerationService;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
+/**
+ * CURRENTLY UNUSED, DEAD CODE — no caller and no test since
+ * `Api\AdminProductController` (its only caller) was removed: the master
+ * spec named it as a JSON write API for products but never named a real
+ * consumer anywhere in the system, so it was deleted. Kept here because
+ * Step 3.5's `ProductForm` Livewire component is spec'd to call this
+ * exact `handle()` method directly. Remove this note once Step 3.5 wires
+ * it up and adds real test coverage.
+ */
 class SaveProductAction
 {
     public function __construct(private readonly CacheGenerationService $cacheGenerationService) {}
