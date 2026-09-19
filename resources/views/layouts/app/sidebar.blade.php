@@ -33,6 +33,24 @@
                 >
                     {{ __('Users') }}
                 </flux:sidebar.item>
+
+                <flux:sidebar.item
+                    icon="archive-box"
+                    :href="route('products.index')"
+                    :current="request()->routeIs('products.*')"
+                    wire:navigate
+                >
+                    {{ __('Products') }}
+                </flux:sidebar.item>
+
+                <flux:sidebar.item
+                    icon="tag"
+                    :href="route('categories.index')"
+                    :current="request()->routeIs('categories.*')"
+                    wire:navigate
+                >
+                    {{ __('Categories') }}
+                </flux:sidebar.item>
             </flux:sidebar.group>
         </flux:sidebar.nav>
 

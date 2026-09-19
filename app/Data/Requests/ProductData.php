@@ -12,11 +12,8 @@ use Spatie\LaravelData\Attributes\WithCast;
 use Spatie\LaravelData\Data;
 
 /**
- * CURRENTLY UNUSED, DEAD CODE — same situation as `SaveProductAction`,
- * its only caller (`Api\AdminProductController`) was removed for having
- * no real consumer anywhere in the system. Kept for Step 3.5's
- * `ProductForm`, which is spec'd to construct this exact DTO. Remove this
- * note once Step 3.5 wires it up and adds real test coverage.
+ * Constructed directly by Step 3.5's `ProductForm` Livewire component and
+ * passed straight into `SaveProductAction` — no controller/route (D110).
  */
 class ProductData extends Data
 {

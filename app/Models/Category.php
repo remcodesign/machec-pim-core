@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection;
 
 /**
  * @property int $id
@@ -46,5 +47,26 @@ class Category extends Model
     public function products(): HasMany
     {
         return $this->hasMany(Product::class);
+    }
+
+    /**
+     * Distinct, non-empty values already used for this category's own
+     * `$attributeKey` across its products — the same "cheap, current
+     * collection only" selector pattern already used for `brand` (D111).
+     * Fine at this catalog's scale; see `docs_local/specs-z-future.md`
+     * for the eventual per-category attribute-definition table this
+     * would need to become to stay cheap at a much larger scale.
+     *
+     * @return Collection<int, string>
+     */
+    public function distinctAttributeValues(string $attributeKey): Collection
+    {
+        return $this->products()
+            ->pluck('attributes')
+            ->pluck($attributeKey)
+            ->filter()
+            ->unique()
+            ->sort()
+            ->values();
     }
 }

@@ -2,7 +2,6 @@
 
 namespace App\Actions\PimCatalog;
 
-use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -32,41 +31,8 @@ class ListProductsAction
      */
     public function handle(Request $request): LengthAwarePaginator
     {
-        $query = Product::query()->with('category');
-
-        if ($request->filled('modified_since')) {
-            $query->where('updated_at', '>', $request->date('modified_since'));
-        }
-
-        $category = null;
-
-        if ($request->filled('category')) {
-            $category = Category::where('slug', $request->query('category'))->first();
-
-            // An unknown category slug filters to zero results rather than
-            // silently ignoring the filter and returning every product.
-            $query->where('category_id', $category === null ? 0 : $category->id);
-        }
-
-        if ($request->filled('brand')) {
-            $query->where('brand', $request->query('brand'));
-        }
-
-        if ($request->filled('price_min')) {
-            $query->where('price_cents', '>=', (int) $request->query('price_min'));
-        }
-
-        if ($request->filled('price_max')) {
-            $query->where('price_cents', '<=', (int) $request->query('price_max'));
-        }
-
-        if ($category !== null) {
-            foreach ($category->filterable_attributes as $attributeKey) {
-                if ($request->filled($attributeKey)) {
-                    $query->where("attributes->{$attributeKey}", $request->query($attributeKey));
-                }
-            }
-        }
+        // Start building the query for products, including their category and applying any filters from the request.
+        $query = Product::query()->with('category')->filter($request);
 
         [$column, $direction] = self::SORT_COLUMNS[$request->query('sort')] ?? self::SORT_COLUMNS['name_asc'];
         $query->orderBy($column, $direction);

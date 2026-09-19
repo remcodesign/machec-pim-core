@@ -26,6 +26,11 @@
     --color-accent: var(--color-neutral-800);
     --color-accent-content: var(--color-neutral-800);
     --color-accent-foreground: var(--color-white);
+
+    /* pim-core's own visual identity marker (D88) — the one variable that
+       makes this app's admin visibly read as different from the three
+       co-located apps' shared blue accent, without forking Tailwind config. */
+    --admin-accent: var(--color-amber-500);
 }
 
 @layer theme {
