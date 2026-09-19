@@ -10,7 +10,7 @@
         <x-stat-tile :label="__('Archived products')" :value="$this->statusBreakdown['archived']" />
     </div>
 
-    <div class="relative flex-1 overflow-hidden rounded-xl border border-neutral-200 p-4 dark:border-neutral-700">
+    <div class="relative overflow-hidden rounded-xl border border-neutral-300 bg-neutral-50 p-4 shadow-sm dark:border-zinc-600 dark:bg-zinc-900">
         <flux:heading size="sm" class="mb-4">{{ __('Recent stock movements') }}</flux:heading>
 
         <flux:table>
@@ -34,6 +34,36 @@
                 @empty
                     <flux:table.row>
                         <flux:table.cell colspan="5">{{ __('No stock movements yet.') }}</flux:table.cell>
+                    </flux:table.row>
+                @endforelse
+            </flux:table.rows>
+        </flux:table>
+    </div>
+
+    <div class="relative overflow-hidden rounded-xl border border-neutral-300 bg-neutral-50 p-4 shadow-sm dark:border-zinc-600 dark:bg-zinc-900">
+        <flux:heading size="sm" class="mb-4">{{ __('Recent activity') }}</flux:heading>
+
+        <flux:table>
+            <flux:table.columns>
+                <flux:table.column>{{ __('Action') }}</flux:table.column>
+                <flux:table.column>{{ __('User') }}</flux:table.column>
+                <flux:table.column>{{ __('Subject') }}</flux:table.column>
+                <flux:table.column>{{ __('When') }}</flux:table.column>
+            </flux:table.columns>
+
+            <flux:table.rows>
+                @forelse ($this->recentAuditLog as $entry)
+                    <flux:table.row :key="$entry->id">
+                        <flux:table.cell>{{ $entry->action }}</flux:table.cell>
+                        <flux:table.cell>{{ $entry->user?->name ?? __('System') }}</flux:table.cell>
+                        <flux:table.cell>
+                            {{ class_basename($entry->subject_type) }} #{{ $entry->subject_id }}
+                        </flux:table.cell>
+                        <flux:table.cell>{{ $entry->created_at?->diffForHumans() }}</flux:table.cell>
+                    </flux:table.row>
+                @empty
+                    <flux:table.row>
+                        <flux:table.cell colspan="4">{{ __('No activity yet.') }}</flux:table.cell>
                     </flux:table.row>
                 @endforelse
             </flux:table.rows>

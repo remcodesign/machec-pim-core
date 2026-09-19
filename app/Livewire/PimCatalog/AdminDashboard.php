@@ -3,10 +3,12 @@
 namespace App\Livewire\PimCatalog;
 
 use App\Enums\ProductStatus;
+use App\Models\AuditLog;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\StockLedgerEntry;
 use Illuminate\Contracts\View\View;
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Support\Collection;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
@@ -66,6 +68,15 @@ class AdminDashboard extends Component
     public function recentStockMovements(): Collection
     {
         return StockLedgerEntry::latest('created_at')->limit(5)->get();
+    }
+
+    /**
+     * @return EloquentCollection<int, AuditLog>
+     */
+    #[Computed]
+    public function recentAuditLog(): EloquentCollection
+    {
+        return AuditLog::with('user')->latest('created_at')->limit(5)->get();
     }
 
     public function render(): View

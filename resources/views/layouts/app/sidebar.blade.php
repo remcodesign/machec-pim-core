@@ -34,6 +34,15 @@
                     {{ __('Users') }}
                 </flux:sidebar.item>
 
+                <flux:sidebar.item
+                    icon="key"
+                    :href="route('service-clients.index')"
+                    :current="request()->routeIs('service-clients.*')"
+                    wire:navigate
+                >
+                    {{ __('Service clients') }}
+                </flux:sidebar.item>
+
                 <br />
 
                 <flux:sidebar.item

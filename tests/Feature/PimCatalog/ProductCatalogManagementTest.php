@@ -202,6 +202,25 @@ test('AdminDashboard shows the correct product/category/low-stock counts', funct
         ->and($component->instance()->statusBreakdown)->toBe(['draft' => 1, 'published' => 1, 'archived' => 1]);
 });
 
+test('AdminDashboard shows recent stock movements before recent audit activity', function (): void {
+    $admin = User::factory()->create()->assignRole('pim_admin');
+    $auditLog = AuditLog::factory()->create([
+        'user_id' => $admin->id,
+        'action' => 'product.created',
+        'subject_type' => Product::class,
+        'subject_id' => 1,
+    ]);
+
+    $component = Livewire::actingAs($admin)->test(AdminDashboard::class);
+
+    expect($component->instance()->recentAuditLog->sole()->is($auditLog))->toBeTrue();
+
+    $component
+        ->assertSee('Recent stock movements')
+        ->assertSee('Recent activity')
+        ->assertSeeInOrder(['Recent stock movements', 'Recent activity', 'product.created']);
+});
+
 test('a customer-role user cannot mount the ProductForm or AdminDashboard Livewire component', function (): void {
     $plainUser = User::factory()->create();
     $category = Category::create(['slug' => 'guarded', 'name' => 'Guarded', 'filterable_attributes' => []]);
