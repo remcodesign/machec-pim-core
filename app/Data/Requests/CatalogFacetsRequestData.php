@@ -12,6 +12,7 @@ class CatalogFacetsRequestData extends Data
         public ?string $brand = null,
         public ?int $price_min = null,
         public ?int $price_max = null,
+        public ?string $status = null,
     ) {}
 
     /**
@@ -39,6 +40,7 @@ class CatalogFacetsRequestData extends Data
                 'nullable', 'integer', 'min:0',
                 $hasPriceMin ? 'gte:price_min' : null,
             ]),
+            'status' => ['nullable', 'string', 'max:255'],
         ];
     }
 }

@@ -26,12 +26,23 @@ class ListCatalogFacetsAction
 
         $attributeKeys = $resolvedCategory instanceof Category ? $resolvedCategory->filterable_attributes : [];
 
+        // `status` is deliberately never excluded from any facet's own
+        // sub-query below (unlike category/brand/price/attribute keys,
+        // which each get excluded when computing *their own* facet) —
+        // it isn't a facet a caller narrows by, it's a constraint that
+        // must apply to every sub-query uniformly. Without this, a
+        // draft/archived product's brand or attribute value showed up as
+        // a selectable option even though `GET /api/v1/products` (which
+        // the BFF always calls with status=published) could never
+        // actually return it — selecting it silently produced zero
+        // results.
         $baseFilters = array_filter(
             [
                 'category' => $request->query('category'),
                 'brand' => $request->query('brand'),
                 'price_min' => $request->query('price_min'),
                 'price_max' => $request->query('price_max'),
+                'status' => $request->query('status'),
                 ...array_combine($attributeKeys, array_map(
                     fn (string $key) => $request->query($key),
                     $attributeKeys,

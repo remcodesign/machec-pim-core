@@ -351,6 +351,42 @@ test('a category-specific attribute filter never leaks into facets.category, sin
         ]);
 });
 
+test('a draft product\'s brand/attribute values never appear in facets when status=published is requested, the same status the BFF always sends', function (): void {
+    Sanctum::actingAs(User::factory()->create(), ['catalog:read']);
+    $category = createCategory(['slug' => 'draft-leak-category', 'filterable_attributes' => ['amperage']]);
+
+    createProduct($category, ['sku' => 'published-1', 'brand' => 'RealBrand', 'attributes' => ['amperage' => '16A']]);
+    createProduct($category, [
+        'sku' => 'draft-1',
+        'brand' => 'DraftOnlyBrand',
+        'attributes' => ['amperage' => '999A'],
+        'status' => 'draft',
+    ]);
+
+    $response = $this->getJson('/api/v1/facets?category=draft-leak-category&status=published');
+
+    $response->assertOk()
+        ->assertJson([
+            'brand' => ['RealBrand'],
+            'attributes' => ['amperage' => ['16A']],
+        ]);
+});
+
+test('facets with no status filter still includes every status, matching ListProductsAction\'s own default', function (): void {
+    Sanctum::actingAs(User::factory()->create(), ['catalog:read']);
+    $category = createCategory(['slug' => 'no-status-filter-category']);
+
+    createProduct($category, ['sku' => 'published-2', 'brand' => 'RealBrand']);
+    createProduct($category, ['sku' => 'draft-2', 'brand' => 'DraftBrand', 'status' => 'draft']);
+
+    $response = $this->getJson('/api/v1/facets?category=no-status-filter-category');
+
+    $response->assertOk()
+        ->assertJson([
+            'brand' => ['DraftBrand', 'RealBrand'],
+        ]);
+});
+
 test('facets with no category selected returns empty attributes but populated brand and price_range', function (): void {
     Sanctum::actingAs(User::factory()->create(), ['catalog:read']);
     $category = createCategory(['filterable_attributes' => ['amperage']]);
