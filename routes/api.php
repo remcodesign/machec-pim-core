@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\CatalogCategoriesController;
+use App\Http\Controllers\Api\CatalogFacetsController;
 use App\Http\Controllers\Api\CatalogProductsController;
 use App\Http\Controllers\Api\StockMovementController;
 use App\Http\Middleware\RecordServiceTokenUsageMiddleware;
@@ -15,6 +16,7 @@ Route::middleware(['auth:sanctum', RecordServiceTokenUsageMiddleware::class])->p
     Route::middleware('abilities:catalog:read')->group(function (): void {
         Route::get('/products', CatalogProductsController::class);
         Route::get('/categories', CatalogCategoriesController::class);
+        Route::get('/facets', CatalogFacetsController::class);
     });
 
     Route::middleware('abilities:stock:movements:write')->group(function (): void {
