@@ -60,7 +60,7 @@ class Product extends Model
     }
 
     /**
-     * `modified_since`/`category`/`brand`/`price_min`/`price_max`/`status`/
+     * `modified_since`/`sku`/`category`/`brand`/`price_min`/`price_max`/`status`/
      * a category's own `filterable_attributes` — the one, shared filter
      * shape both the storefront's read API (`ListProductsAction`, Step
      * 3.3) and the admin's `ProductIndex` (D111) query against, so
@@ -76,6 +76,10 @@ class Product extends Model
     {
         if ($request->filled('modified_since')) {
             $query->where('updated_at', '>', $request->date('modified_since'));
+        }
+
+        if ($request->filled('sku')) {
+            $query->where('sku', $request->query('sku'));
         }
 
         $category = null;

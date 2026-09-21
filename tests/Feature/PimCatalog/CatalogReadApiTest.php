@@ -153,6 +153,22 @@ test('a filtered products call still returns only one page of results, page size
         ->and(collect($response->json('data')))->toHaveCount(6);
 });
 
+test('sku returns an exact match regardless of default pagination and sort order', function (): void {
+    Sanctum::actingAs(User::factory()->create(), ['catalog:read']);
+    $category = createCategory();
+
+    foreach (range(1, 8) as $i) {
+        createProduct($category, ['sku' => "zzz-page-test-{$i}", 'name' => "Zzz Page Test {$i}"]);
+    }
+    createProduct($category, ['sku' => 'target-sku', 'name' => 'Aaa Not On Page One']);
+
+    $response = $this->getJson('/api/v1/products?sku=target-sku');
+
+    $response->assertOk();
+
+    expect(collect($response->json('data'))->pluck('sku')->all())->toBe(['target-sku']);
+});
+
 test('sort=price_desc orders the response by price_cents descending', function (): void {
     Sanctum::actingAs(User::factory()->create(), ['catalog:read']);
     $category = createCategory();
