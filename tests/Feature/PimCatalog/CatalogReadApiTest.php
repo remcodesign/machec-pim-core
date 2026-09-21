@@ -64,6 +64,30 @@ test('rejects an invalid category modified_since value', function (): void {
         ->assertJsonValidationErrors(['modified_since']);
 });
 
+test('accepts price_min alone, with no price_max, instead of 422ing on a comparison rule with nothing to compare against', function (): void {
+    Sanctum::actingAs(User::factory()->create(), ['catalog:read']);
+    $category = createCategory();
+    createProduct($category, ['sku' => 'cheap', 'price_cents' => 100]);
+    createProduct($category, ['sku' => 'expensive', 'price_cents' => 400000]);
+
+    $response = $this->getJson('/api/v1/products?price_min=4000');
+
+    $response->assertOk();
+    expect(collect($response->json('data'))->pluck('sku')->all())->toBe(['expensive']);
+});
+
+test('accepts price_max alone, with no price_min, instead of 422ing on a comparison rule with nothing to compare against', function (): void {
+    Sanctum::actingAs(User::factory()->create(), ['catalog:read']);
+    $category = createCategory();
+    createProduct($category, ['sku' => 'cheap', 'price_cents' => 100]);
+    createProduct($category, ['sku' => 'expensive', 'price_cents' => 400000]);
+
+    $response = $this->getJson('/api/v1/products?price_max=4000');
+
+    $response->assertOk();
+    expect(collect($response->json('data'))->pluck('sku')->all())->toBe(['cheap']);
+});
+
 test('rejects a product price range where the minimum exceeds the maximum', function (): void {
     Sanctum::actingAs(User::factory()->create(), ['catalog:read']);
 
