@@ -177,6 +177,37 @@ test('a filtered products call still returns only one page of results, page size
         ->and(collect($response->json('data')))->toHaveCount(6);
 });
 
+test('product listing queries always order by id after the requested sort column', function (): void {
+    // `paginate()` runs page 1 and page 2 as two separate LIMIT/OFFSET
+    // queries, at two different moments. `ORDER BY name ASC` alone doesn't
+    // guarantee those two queries agree on the relative order of rows that
+    // tie on `name` — Postgres can resolve that differently between them (a
+    // different scan plan, stats refreshed in between) — which surfaces as
+    // a product appearing on two pages, or on neither. `id` is unique, so
+    // appending it as a secondary sort pins the order down regardless of
+    // ties or plan choice. Asserted on the executed SQL rather than by
+    // trying to force page overlap through data, since the underlying
+    // instability is a planner/timing property Postgres doesn't guarantee
+    // to reproduce for a small, single-session test table.
+    Sanctum::actingAs(User::factory()->create(), ['catalog:read']);
+    $category = createCategory();
+    createProduct($category, ['sku' => 'sql-order-check']);
+
+    $queries = [];
+    DB::listen(function ($query) use (&$queries): void {
+        $queries[] = $query->sql;
+    });
+
+    $this->getJson('/api/v1/products')->assertOk();
+
+    $selectQueries = array_filter(
+        $queries,
+        fn (string $sql): bool => str_starts_with($sql, 'select') && str_contains($sql, 'order by'),
+    );
+
+    expect($selectQueries)->not->toBeEmpty()->each->toMatch('/order by "\w+" (asc|desc), "id" asc/');
+});
+
 test('sku returns an exact match regardless of default pagination and sort order', function (): void {
     Sanctum::actingAs(User::factory()->create(), ['catalog:read']);
     $category = createCategory();

@@ -35,7 +35,13 @@ class ListProductsAction
         $query = Product::query()->with('category')->filter($request);
 
         [$column, $direction] = self::SORT_COLUMNS[$request->query('sort')] ?? self::SORT_COLUMNS['name_asc'];
-        $query->orderBy($column, $direction);
+        // `id` breaks ties deterministically. Without it, `paginate()`'s two
+        // separate LIMIT/OFFSET queries (one per page) aren't guaranteed to
+        // agree on tied rows' relative order — Postgres can resolve the
+        // primary column differently between them (a different scan plan,
+        // stats refreshed in between), which surfaces as the same product
+        // appearing on two pages or vanishing between them.
+        $query->orderBy($column, $direction)->orderBy('id', 'asc');
 
         return $query->paginate(self::PAGE_SIZE);
     }
