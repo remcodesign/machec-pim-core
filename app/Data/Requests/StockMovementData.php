@@ -2,6 +2,7 @@
 
 namespace App\Data\Requests;
 
+use App\Enums\StockMovementReason;
 use Spatie\LaravelData\Attributes\Validation\ArrayType;
 use Spatie\LaravelData\Attributes\Validation\Max;
 use Spatie\LaravelData\Attributes\Validation\Required;
@@ -19,6 +20,7 @@ class StockMovementData extends Data
         public string $reference,
         #[Required, ArrayType]
         public array $lines,
+        public StockMovementReason $reason = StockMovementReason::ApiOrder,
     ) {}
 
     /**

@@ -6,6 +6,7 @@ use App\Data\Requests\StockMovementData;
 use App\Data\Requests\StockMovementLineRequestData;
 use App\Data\Responses\StockMovementLineData;
 use App\Data\Responses\StockMovementResultData;
+use App\Enums\StockMovementReason;
 use App\Exceptions\StockMovementReferenceConflictException;
 use App\Exceptions\StockUnavailableException;
 use App\Models\Product;
@@ -39,7 +40,7 @@ class RecordStockMovementAction
                 $this->ensureMovementCanBeApplied($lines, $products);
 
                 // Finally, apply new movements and assemble the response lines.
-                $resultLines = $this->applyMovement($data->reference, $lines, $products);
+                $resultLines = $this->applyMovement($data->reference, $data->reason, $lines, $products);
 
                 return new StockMovementResultData(applied: true, lines: $resultLines);
             });
@@ -128,7 +129,7 @@ class RecordStockMovementAction
      * @param  Collection<string, Product>  $products
      * @return array<int, StockMovementLineData>
      */
-    private function applyMovement(string $reference, Collection $lines, Collection $products): array
+    private function applyMovement(string $reference, StockMovementReason $reason, Collection $lines, Collection $products): array
     {
         $resultLines = [];
 
@@ -147,6 +148,7 @@ class RecordStockMovementAction
                 'sku' => $line->sku,
                 'quantity' => $line->quantity,
                 'resulting_stock' => $resultingStock,
+                'reason' => $reason->value,
             ]);
 
             $resultLines[] = $this->resultLine($product, $line->quantity, $resultingStock);

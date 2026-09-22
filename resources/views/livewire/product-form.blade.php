@@ -75,7 +75,12 @@
 
         @if ($product)
             <flux:text class="text-zinc-500 dark:text-zinc-400">
-                {{ __('Current stock: :stock — adjust it via the stock-movements API, not this form.', ['stock' => $product->stock]) }}
+                {{ __('Current stock: :stock —', ['stock' => $product->stock]) }}
+                <a
+                    href="{{ route('products.stock', $product) }}"
+                    wire:navigate
+                    class="underline"
+                >{{ __('manage stock') }}</a>
             </flux:text>
         @endif
 

@@ -5,6 +5,7 @@ use App\Livewire\PimCatalog\CategoryForm;
 use App\Livewire\PimCatalog\CategoryIndex;
 use App\Livewire\PimCatalog\ProductForm;
 use App\Livewire\PimCatalog\ProductIndex;
+use App\Livewire\PimCatalog\ProductStock;
 use App\Livewire\PimCatalog\ServiceClientCreate;
 use App\Livewire\PimCatalog\ServiceClientIndex;
 use App\Livewire\PimCatalog\UserCreate;
@@ -28,6 +29,7 @@ Route::middleware(['auth', 'verified', RoleMiddleware::using('pim_admin')])->gro
     Route::livewire('products', ProductIndex::class)->name('products.index');
     Route::livewire('products/create', ProductForm::class)->name('products.create');
     Route::livewire('products/{product}/edit', ProductForm::class)->name('products.edit')->whereNumber('product');
+    Route::livewire('products/{product}/stock', ProductStock::class)->name('products.stock')->whereNumber('product');
 
     Route::livewire('categories', CategoryIndex::class)->name('categories.index');
     Route::livewire('categories/create', CategoryForm::class)->name('categories.create');

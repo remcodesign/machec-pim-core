@@ -127,14 +127,26 @@
                         <flux:badge size="sm">{{ $product->status->value }}</flux:badge>
                     </flux:table.cell>
                     <flux:table.cell>
-                        <flux:button
-                            :href="route('products.edit', $product)"
-                            size="sm"
-                            class="cursor-pointer"
-                            wire:navigate
-                        >
-                            {{ __('Edit') }}
-                        </flux:button>
+                        <div class="flex gap-2">
+                            <flux:button
+                                :href="route('products.edit', $product)"
+                                size="sm"
+                                class="cursor-pointer"
+                                wire:navigate
+                            >
+                                {{ __('Edit') }}
+                            </flux:button>
+
+                            <flux:button
+                                :href="route('products.stock', $product)"
+                                size="sm"
+                                variant="filled"
+                                class="cursor-pointer"
+                                wire:navigate
+                            >
+                                {{ __('Stock') }}
+                            </flux:button>
+                        </div>
                     </flux:table.cell>
                 </flux:table.row>
             @endforeach
